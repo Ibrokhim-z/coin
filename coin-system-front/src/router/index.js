@@ -18,10 +18,23 @@ const router = createRouter({
 
     // --- УЧЕНИК (Student) ---
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/Student/DashboardView.vue'),
-      meta: { requiresAuth: true, role: 'student' }
+      path: '/',
+      component: () => import('../components/student/StudentLayout.vue'), // <-- НАША НОВАЯ ОБОЛОЧКА
+      meta: { requiresAuth: true, role: 'student' },
+      children: [
+        {
+          path: 'dashboard', // будет /dashboard
+          component: () => import('../views/Student/DashboardView.vue')
+        },
+        {
+          path: 'shop', // будет /shop
+          component: () => import('../views/Student/ShopView.vue')
+        },
+        {
+          path: 'orders', // будет /orders (НОВАЯ СТРАНИЦА)
+          component: () => import('../views/Student/OrdersView.vue')
+        }
+      ]
     },
     {
       path: '/shop',
@@ -81,19 +94,26 @@ const router = createRouter({
   ]
 })
 
-// --- ЗАЩИТА ---
+// --- ГЛОБАЛЬНАЯ ЗАЩИТА МАРШРУТОВ ---
 router.beforeEach((to, from, next) => {
-  // ВРЕМЕННО: Пропускаем всех везде, чтобы ты мог посмотреть верстку
-  // Когда подключим Бэкенд, мы раскомментируем код ниже
-  next();
-
-  /* const token = localStorage.getItem('access_token');
+  // 1. Смотрим, есть ли токен в кармане (localStorage)
+  const token = localStorage.getItem('access_token');
+  
+  // 2. Если страница требует входа (requiresAuth), а токена нет
   if (to.meta.requiresAuth && !token) {
+    // Стоп! Иди на логин
     next('/login');
-  } else {
+  } 
+  // 3. Если мы уже вошли (есть токен) и пытаемся зайти на Логин или Регистрацию
+  else if ((to.path === '/login' || to.path === '/register') && token) {
+    // Нечего там делать, иди сразу в магазин (или в зависимости от роли)
+    // Пока просто кинем на главную, а там разберемся
+    next('/shop'); 
+  }
+  else {
+    // Всё ок, проходи
     next();
   }
-  */
 });
 
 export default router

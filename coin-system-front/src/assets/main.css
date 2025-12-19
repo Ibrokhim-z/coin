@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary-color: #c73bd4;  /* Фиолетовый (Бренд) */
+  --accent-color: #46e37b;   /* Лайм (Действие/Успех) */
+  --dark-text: #1a252f;      /* Темный текст для контраста на зеленом */
+  --bg-color: #f4f7fc;
+  
+  /* Element Plus переопределение */
+  --el-color-primary: var(--primary-color);
+  --el-color-success: var(--accent-color);
+  --el-color-warning: #f1c40f;
+  --el-color-danger: #e74c3c;
+  --el-border-radius-base: 14px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: #2c3e50;
+  overflow-x: hidden; /* Чтобы не было прокрутки вбок */
+}
+
+/* --- КНОПКИ (СДЕЛАЕМ ИХ СОЧНЫМИ) --- */
+
+/* Основная фиолетовая кнопка */
+.el-button--primary {
+  background: linear-gradient(135deg, #c73bd4 0%, #a528b0 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(199, 59, 212, 0.3);
+  transition: transform 0.2s;
+}
+.el-button--primary:active { transform: scale(0.95); }
+
+/* Кнопка Успеха (ЗЕЛЕНАЯ) - ТЕПЕРЬ ОНА ГЛАВНАЯ ДЛЯ ДЕЙСТВИЙ */
+.el-button--success {
+  background: var(--accent-color) !important;
+  border: none !important;
+  color: var(--dark-text) !important; /* Темный текст на лаймовом фоне читается лучше! */
+  font-weight: 800 !important;
+  box-shadow: 0 4px 15px rgba(70, 227, 123, 0.4) !important;
+}
+.el-button--success:hover {
+  background: #3ce073 !important;
+  transform: translateY(-2px);
+}
+
+/* Glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+/* Исправление, чтобы контент не перекрывался */
+.el-main { overflow: hidden; }

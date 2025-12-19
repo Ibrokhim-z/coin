@@ -53,8 +53,59 @@ const logout = () => {
 </script>
 
 <style scoped>
-.admin-layout { display: flex; height: 100vh; }
-.sidebar { background-color: #304156; color: white; }
-.logo { padding: 20px; font-size: 18px; font-weight: bold; color: white; text-align: center; border-bottom: 1px solid #1f2d3d; }
-.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; }
+/* src/components/admin/AdminLayout.vue -> <style> */
+
+.admin-layout { display: flex; height: 100vh; background: #f4f7fc; }
+
+/* Сайдбар с градиентом */
+.sidebar {
+  background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%) !important;
+  color: white;
+  border-right: none;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+}
+
+.logo {
+  padding: 30px 20px;
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+  text-align: center;
+  letter-spacing: 1px;
+  /* Градиентный текст для лого */
+  background: linear-gradient(to right, #c73bd4, #46e37b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Меню items */
+.el-menu { border-right: none !important; background: transparent !important; }
+
+.el-menu-item {
+  color: #a0aec0 !important;
+  margin: 5px 10px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.el-menu-item:hover {
+  background: rgba(255,255,255,0.1) !important;
+  color: white !important;
+}
+
+/* Активный пункт меню - ТВОЙ ФИОЛЕТОВЫЙ */
+.el-menu-item.is-active {
+  background: var(--primary-color) !important; /* #c73bd4 */
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(199, 59, 212, 0.4);
+  font-weight: 600;
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid #eee;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
 </style>
