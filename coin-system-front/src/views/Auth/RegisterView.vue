@@ -1,81 +1,84 @@
 <template>
-  <div class="auth-page">
-    <el-card class="auth-card">
-      <h2>®️ Регистрация</h2>
-      <p class="subtitle">Создайте тестовый аккаунт любой роли</p>
+  <div class="auth-container">
+    <div class="glass-card auth-card">
+      <h2 class="title">Регистрация 🎓</h2>
+      <p class="subtitle">Присоединяйся к системе мотивации</p>
 
-      <el-form label-position="top">
+      <el-form label-position="top" @submit.prevent="handleRegister" size="large">
         
-        <el-form-item label="ФИО">
-          <el-input v-model="form.fullname" placeholder="Иванов Иван" />
+        <el-form-item label="ФИО (Фамилия Имя)">
+          <el-input v-model="form.full_name" placeholder="Иванов Иван" />
         </el-form-item>
 
         <el-form-item label="Придумайте логин">
-          <el-input v-model="form.username" placeholder="user123" />
+          <el-input v-model="form.username" placeholder="ivan2025" />
         </el-form-item>
 
         <el-form-item label="Пароль">
-          <el-input v-model="form.password" type="password" show-password />
+          <el-input v-model="form.password" type="password" show-password placeholder="••••••••" />
         </el-form-item>
 
-        <el-form-item label="Выберите роль (для теста)">
-          <el-select v-model="form.role" placeholder="Кто вы?" style="width: 100%">
-            <el-option label="👨‍🎓 Ученик (Student)" value="student" />
-            <el-option label="👨‍🏫 Учитель (Teacher)" value="teacher" />
-            <el-option label="👔 Менеджер (Manager)" value="manager" />
-            <el-option label="😎 Админ (Admin)" value="admin" />
-          </el-select>
-        </el-form-item>
-
-        <el-button type="primary" class="w-100" @click="handleRegister">
+        <el-button type="primary" class="submit-btn" @click="handleRegister" :loading="loading" round>
           Создать аккаунт
         </el-button>
 
-        <div class="link">
-          Уже есть аккаунт? <router-link to="/login">Войти</router-link>
+        <div class="footer">
+          Уже есть аккаунт? <router-link to="/login" class="link-text">Войти</router-link>
         </div>
       </el-form>
-    </el-card>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import authApi from '@/api/auth';
 
 const router = useRouter();
+const loading = ref(false);
 
 const form = reactive({
-  fullname: '',
+  full_name: '',
   username: '',
   password: '',
-  role: 'student' // По умолчанию ученик
+  role: 'student', // БЕЗОПАСНОСТЬ: Только ученик
+  group_id: 1
 });
 
-const handleRegister = () => {
-  // ИМИТАЦИЯ РЕГИСТРАЦИИ (БЕЗ БЭКЕНДА)
-  // Мы сохраняем данные "понарошку" в браузер, чтобы Логин их увидел
-  
-  const fakeUser = {
-    username: form.username,
-    password: form.password,
-    role: form.role,
-    fullname: form.fullname
-  };
+const handleRegister = async () => {
+  if(!form.username || !form.password || !form.full_name) {
+    return ElMessage.warning('Пожалуйста, заполните все поля');
+  }
 
-  // Сохраняем в localStorage (временная база данных браузера)
-  localStorage.setItem('test_user', JSON.stringify(fakeUser));
-
-  ElMessage.success(`Пользователь ${form.role} создан! Теперь войдите.`);
-  router.push('/login');
+  loading.value = true;
+  try {
+    await authApi.register(form);
+    ElMessage.success('Успешно! Теперь войдите в систему.');
+    router.push('/login');
+  } catch (error) {
+    if (error.response) {
+       ElMessage.error(error.response.data.detail || 'Ошибка регистрации');
+    } else {
+       ElMessage.error('Нет соединения с сервером');
+    }
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
 <style scoped>
-.auth-page { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; }
-.auth-card { width: 400px; }
-.subtitle { color: gray; margin-bottom: 20px; font-size: 14px; }
-.w-100 { width: 100%; margin-top: 10px; font-weight: bold; }
-.link { text-align: center; margin-top: 15px; font-size: 14px; }
+.auth-container {
+  min-height: 100vh;
+  display: flex; justify-content: center; align-items: center;
+  background: var(--bg-gradient);
+  padding: 20px;
+}
+.auth-card { width: 100%; max-width: 400px; padding: 40px 30px; }
+.title { text-align: center; margin: 0; color: #2c3e50; font-weight: 800; }
+.subtitle { text-align: center; color: #95a5a6; margin-top: 5px; margin-bottom: 30px; font-size: 14px; }
+.submit-btn { width: 100%; height: 48px; font-size: 16px; margin-top: 10px; }
+.footer { text-align: center; margin-top: 25px; font-size: 14px; color: #7f8c8d; }
 </style>
